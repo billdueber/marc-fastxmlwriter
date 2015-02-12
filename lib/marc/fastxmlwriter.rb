@@ -5,12 +5,12 @@ require 'marc'
 module MARC
   class FastXMLWriter < MARC::XMLWriter
 
-    @xml_header = '<?xml version="1.0" encoding="UTF-8"?>'
-    @open_record = "<record>" # or "<marc:record">
-    @open_record_namespace = "<marc:record>"
+    XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>'
     
-    @open_leader = "<leader>"
-
+    
+    OPEN_COLLECTION = "<collection">
+    OPEN_COLLECTION_NAMESPACE = %Q{<collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/MARC21/slim" xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">}
+  
     
     def initialize(file, opts={})
       super
@@ -22,11 +22,20 @@ module MARC
     end
     
     class << self
-      
+            
+      def open_collection(use_ns)
+        if use_ns
+          %Q{<collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:marc="http://www.loc.gov/MARC21/slim" xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">}.dup
+        else
+          "<collection>".dup
+        end
+      end
+        
       
       def single_record_document(r, opts={})
-        xml = @xml_header.dup
-        xml << '<collection>'
+        
+        xml = XML_HEADER.dup
+        xml << open_collection(opts[:include_namespace])
         xml << encode(r, opts)
         xml << '</collection>'
         xml
@@ -48,7 +57,7 @@ module MARC
       end
     
       def encode(r, opts={})
-        xml = (opts[:include_namespace] ? @open_record_namespace.dup : @open_record.dup)
+        xml = "<record>"
       
         # MARCXML only allows alphanumerics or spaces in the leader
         lead = r.leader.gsub(/[^\w|^\s]/, 'Z').encode(:xml=>:text)
@@ -61,7 +70,7 @@ module MARC
           lead[6..6] = "Z"
         end
       
-        xml << @open_leader << lead.encode(:xml => :text) << '</leader>'
+        xml << "<leader>" << lead.encode(:xml => :text) << '</leader>'
         r.each do |f|
           if f.class == MARC::DataField
             xml << open_datafield(f.tag, f.indicator1, f.indicator2)

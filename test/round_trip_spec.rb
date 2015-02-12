@@ -16,10 +16,12 @@ describe "round-trip tests" do
   it "round-trips to/from xml and MARC::Record" do
     ROUND_TRIP_FILES.each do |filename|
       MARC::Reader.new(filename).each_with_index do |r1, i|
-        xml = MARC::FastXMLWriter.single_record_document(r1)
-        s = StringIO.new(xml)
-        r2 = MARC::XMLReader.new(s).first
-        assert_equal r1, r2, "File #{filename} record #{i}"
+        [false, true].each do |use_namespace|
+          xml = MARC::FastXMLWriter.single_record_document(r1, :include_namespace=>use_namespace)
+          s = StringIO.new(xml)
+          r2 = MARC::XMLReader.new(s).first
+          assert_equal r1, r2, "File #{filename} record #{i}, include_namespace = #{use_namespace}"
+        end
       end
     end
   end
