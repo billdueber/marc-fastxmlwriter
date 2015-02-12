@@ -5,6 +5,8 @@ Turn a single ruby-marc Record object into a MARC-XML string, but faster.
 
 ```ruby
 
+require 'marc/fastxmlwriter'
+
 r = MARC::Reader.new('mystuff.mrc').first
 xmlstring = MARC::FastXMLWriter.single_record_document(r)
 xml_with_namespace = MARC::FastXMLWriter.single_record_document(r, :include_namespace=>true)
@@ -29,9 +31,6 @@ Or install it yourself as:
 
     $ gem install marc-fastxmlwriter
 
-## Usage
-
-TODO: Write usage instructions here
 
 ## Contributing
 
