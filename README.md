@@ -1,5 +1,7 @@
 # Marc::FastXMLWriter
 
+[![Build Status](https://travis-ci.org/billdueber/marc-fastxmlwriter.svg?branch=master)](https://travis-ci.org/billdueber/marc-fastxmlwriter)
+
 Turn a single ruby-marc Record object into a MARC-XML string, but faster.
 
 
