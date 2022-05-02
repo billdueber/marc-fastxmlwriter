@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "marc", "~>1.0"
   spec.add_development_dependency "bundler", "~> 2.0"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rake", "~>13"
   spec.add_development_dependency "minitest", "~> 5.0"
   spec.add_development_dependency "nokogiri", "~> 1.0"
 end
