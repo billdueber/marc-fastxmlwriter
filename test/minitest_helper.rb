@@ -6,9 +6,9 @@ require "minitest/spec"
 require "minitest/autorun"
 
 def test_data_dir
-  File.expand_path(File.join(File.dirname(__FILE__), "test_data"))
+  File.join(__dir__, "test_data")
 end
 
 def test_data(relative_path)
-  File.expand_path(File.join("test_data", relative_path), File.dirname(__FILE__))
+  File.join(__dir__, "test_data", relative_path)
 end

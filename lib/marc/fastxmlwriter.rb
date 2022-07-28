@@ -6,8 +6,7 @@ module MARC
   class FastXMLWriter < MARC::XMLWriter
     XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>'
 
-    OPEN_COLLECTION = "<collection>"
-    OPEN_COLLECTION_NAMESPACE = %(<collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/MARC21/slim" xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">)
+    NS_ATTRS = %(xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/MARC21/slim" xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd")
 
     def initialize(file, opts = {})
       super
@@ -21,9 +20,17 @@ module MARC
     class << self
       def open_collection(use_ns)
         if use_ns
-          OPEN_COLLECTION_NAMESPACE.dup
+          "<collection #{NS_ATTRS}>"
         else
-          OPEN_COLLECTION.dup
+          "<collection>"
+        end
+      end
+
+      def open_record(use_ns)
+        if use_ns
+          "<record #{NS_ATTRS}>"
+        else
+          "<record>"
         end
       end
 
@@ -49,8 +56,8 @@ module MARC
         "<controlfield tag=\"#{tag}\">"
       end
 
-      def encode(r)
-        xml = "<record>"
+      def encode(r, include_namespace: false)
+        xml = open_record(include_namespace)
 
         # MARCXML only allows alphanumerics or spaces in the leader
         lead = r.leader.gsub(/[^\w|^\s]/, "Z").encode(xml: :text)
